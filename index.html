@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>USDTExchange – Thai Baht to USDT Exchange</title>
+  <style>
+    /* Global reset */
+    *, *::before, *::after {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* Header */
+    header {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0,0,0,.1);
+    }
+    nav {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.5rem; font-weight: bold; color: #667eea;
+    }
+    .nav-links {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none; color: #333; font-weight: 500;
+      transition: color .3s;
+    }
+    .nav-links a:hover { color: #667eea; }
+    .user-info {
+      background: #667eea; color: #fff;
+      padding: .3rem .75rem; border-radius: 20px;
+      font-size: .85rem;
+    }
+
+    /* Page wrapper */
+    .page { display: none; padding-top: 4.5rem; }
+    .page.active { display: block; }
+
+    /* Card base */
+    .exchange-card {
+      background: #fff; border-radius: 20px;
+      padding: 2rem; box-shadow: 0 10px 40px rgba(0,0,0,.1);
+      margin: 2rem 0;
+    }
+    .exchange-header h1,
+    .exchange-header h2 {
+      margin-bottom: .5rem;
+      color: #333;
+    }
+    .exchange-header h1 { font-size: 2rem; }
+    .exchange-header h2 { font-size: 1.5rem; }
+
+    /* Live rate */
+    .rate-display {
+      background: linear-gradient(135deg,#4CAF50,#45a049);
+      color: #fff; padding: 1rem;
+      border-radius: 15px; text-align: center;
+      margin: 1.5rem 0; box-shadow: 0 4px 15px rgba(76,175,80,.3);
+    }
+    .rate-display .rate { font-size: 1.25rem; font-weight: bold; }
+    .rate-display .live { font-size: .8rem; opacity: .9; }
+
+    /* Exchange types */
+    .exchange-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .exchange-type {
+      background: #fff; border: 2px solid #e0e0e0;
+      border-radius: 15px; padding: 1rem;
+      text-align: center; cursor: pointer;
+      transition: border-color .3s, transform .3s;
+    }
+    .exchange-type:hover,
+    .exchange-type.active {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      background: #f8f9ff;
+    }
+    .exchange-type h3 { margin-bottom: .5rem; }
+
+    /* Inputs & button */
+    .input-group { margin-bottom: 1rem; }
+    .input-group label {
+      display: block; margin-bottom: .25rem;
+      font-weight: 500; color: #333;
+    }
+    .input-group input,
+    .input-group select {
+      width: 100%; padding: .75rem;
+      border: 2px solid #e0e0e0; border-radius: 10px;
+      font-size: 1rem; transition: border-color .3s;
+    }
+    .input-group input:focus,
+    .input-group select:focus { border-color: #667eea; outline: none; }
+    
+    /* File upload styling */
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    .file-upload input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    .file-upload-label {
+      display: block;
+      padding: 0.75rem;
+      background: #f8f9ff;
+      border: 2px dashed #667eea;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .file-upload-label:hover {
+      background: #e8eaff;
+    }
+    .file-upload-label.has-file {
+      background: #e8f5e8;
+      border-color: #4CAF50;
+    }
+    
+    .result-display {
+      display: flex; justify-content: space-between;
+      align-items: center; background: #f8f9ff;
+      padding: 1rem; border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    .result-amount { font-size: 1.1rem; font-weight: bold; color: #667eea; }
+    .exchange-btn {
+      width: 100%; background: linear-gradient(135deg,#667eea,#764ba2);
+      color: #fff; border: none; padding: .75rem;
+      border-radius: 10px; font-size: 1rem;
+      font-weight: bold; cursor: pointer;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .exchange-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102,126,234,.4);
+    }
+    .exchange-btn:disabled {
+      background: #ccc; cursor: not-allowed; transform: none;
+    }
+
+    /* USDT Account Display */
+    .usdt-account {
+      background: #f0f8ff;
+      border: 2px solid #667eea;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .usdt-account h4 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+    .usdt-address {
+      font-family: monospace;
+      font-size: 0.9rem;
+      background: #fff;
+      padding: 0.5rem;
+      border-radius: 5px;
+      word-break: break-all;
+      border: 1px solid #ddd;
+    }
+    .copy-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .copy-btn:hover {
+      background: #5a6fd8;
+    }
+
+    /* Site Info */
+    .site-info {
+      background: #fff; border-radius: 20px;
+      padding: 2rem; box-shadow: 0 10px 40px rgba(0,0,0,.1);
+      margin-bottom: 2rem;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+      gap: 1.5rem; margin-top: 1rem;
+    }
+    .info-card {
+      background: #f8f9ff; padding: 1rem;
+      border-radius: 15px; border-left: 4px solid #667eea;
+    }
+    .info-card h3 {
+      margin-bottom: .75rem; font-size: 1rem; color: #333;
+    }
+    .info-card ul { list-style: none; }
+    .info-card li {
+      position: relative; padding-left: 1.2em;
+      margin-bottom: .4rem; color: #666;
+    }
+    .info-card li::before {
+      content: "✓"; position: absolute; left: 0;
+      color: #4CAF50; font-weight: bold;
+    }
+
+    /* Back button (Transaction page) */
+    .back-btn {
+      background: none; border: none;
+      color: #667eea; font-size: .9rem;
+      cursor: pointer; margin-bottom: 1rem;
+      padding: 0;
+    }
+    .back-btn:hover { text-decoration: underline; }
+
+   /* Footer */
+   footer {
+      background: rgba(0,0,0,.8); color: #ccc;
+      text-align: center; padding: 2rem 0;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 1.5rem; margin-bottom: 1.5rem;
+    }
+    .footer-section {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5rem;
+    }
+    .footer-section h4 { margin-bottom: .5rem; color: #667eea; }
+    .footer-section p, .footer-section a {
+      color: #ccc; text-decoration: none; line-height: 1.5;
+    }
+    .footer-section a:hover { color: #fff; }
+    footer p { font-size: .85rem; }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      .exchange-header h1 { font-size: 1.75rem; }
+      .rate-display .rate { font-size: 1.1rem; }
+    }
+
+
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="container">
+      <div class="logo">USDT Exchange Demo</div>
+      <div class="nav-links">
+        <a href="#" onclick="showPage('home')">Home</a>
+        <div class="user-info">Welcome, John Doe</div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Home Page -->
+  <div id="home" class="page active">
+    <main class="container">
+      <div class="exchange-card">
+        <div class="exchange-header">
+          <h1>USDT Exchange</h1>
+          <p>Fast &amp; Secure USDT ↔ Thai Baht Exchange</p>
+        </div>
+
+        <div class="rate-display">
+          <div class="rate">1 USDT = ฿<span id="current-rate">35.20</span> THB</div>
+          <div class="live">🟢 Live Rate</div>
+        </div>
+
+        <div class="exchange-types">
+          <div class="exchange-type active" onclick="setExchangeType('buy')">
+            <h3>💰 Buy USDT</h3>
+          </div>
+          <div class="exchange-type" onclick="setExchangeType('sell')">
+            <h3>💸 Sell USDT</h3>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label id="amount-label">Amount (THB)</label>
+          <input type="number" id="amount-input" placeholder="Enter amount" oninput="calculateExchange()"/>
+        </div>
+
+        <div class="result-display" id="result-display" style="display:none;">
+          <span>You will receive:</span>
+          <span class="result-amount" id="result-amount">0</span>
+        </div>
+
+        <button class="exchange-btn" onclick="proceedToTransaction()" id="exchange-btn" disabled>
+          Exchange Now
+        </button>
+      </div>
+
+      <!-- Site Information -->
+      <div class="site-info">
+        <div class="exchange-header">
+          <h2>Why Choose USDTExchange?</h2>
+          <p>Your trusted partner for USDT and Thai Baht exchange</p>
+        </div>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>🔒 Secure &amp; Safe</h3>
+            <ul>
+              <li>Bank-level security</li>
+              <li>SSL encrypted transactions</li>
+              <li>Multi-factor authentication</li>
+              <li>Cold storage for funds</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>⚡ Fast &amp; Reliable</h3>
+            <ul>
+              <li>Instant rate quotes</li>
+              <li>Quick processing times</li>
+              <li>24/7 service availability</li>
+              <li>Real-time market rates</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>💳 Multiple Payment Options</h3>
+            <ul>
+              <li>Bank transfer</li>
+              <li>PromptPay</li>
+              <li>Cash meetup in Bangkok</li>
+              <li>Mobile banking</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>🎯 Best Rates</h3>
+            <ul>
+              <li>Competitive exchange rates</li>
+              <li>Low transaction fees</li>
+              <li>No hidden charges</li>
+              <li>Volume discounts available</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Transaction Page -->
+  <div id="transaction" class="page">
+    <main class="container">
+      <div class="exchange-card">
+        <button class="back-btn" onclick="showPage('home')">&larr; Back</button>
+        <div class="exchange-header">
+          <h2 id="transaction-title">Confirm Your Details</h2>
+        </div>
+
+        <div class="user-details" style="margin-bottom:1.5rem;">
+          <p><strong>Name:</strong> John Doe</p>
+          <p><strong>Email:</strong> john.doe@example.com</p>
+          <p><strong>Transaction Type:</strong> <span id="transaction-type-display">Buy USDT</span></p>
+        </div>
+
+        <form id="transaction-form">
+          <div class="input-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="081-234-5678" required>
+          </div>
+
+          <!-- Buy USDT Section -->
+          <div id="buy-section">
+            <div class="input-group">
+              <label for="payment-method-buy">Payment Method</label>
+              <select id="payment-method-buy" onchange="toggleAddressField()">
+                <option value="bank">Bank Transfer</option>
+                <option value="promptpay">PromptPay</option>
+                <option value="cash">Cash Meetup</option>
+              </select>
+            </div>
+
+            <div class="input-group" id="address-group-buy" style="display:none;">
+              <label for="pickup-location-buy">Meetup Location (Bangkok)</label>
+              <select id="pickup-location-buy">
+                <option value="sukhumvit">Sukhumvit</option>
+                <option value="siam">Siam</option>
+                <option value="silom">Silom</option>
+                <option value="chonburi">Chonburi Road</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Sell USDT Section -->
+          <div id="sell-section" style="display:none;">
+            <div class="usdt-account">
+              <h4>📍 Send USDT to this address:</h4>
+              <div class="usdt-address" id="usdt-address">TRC20: TYDz8cgkEf5V1x2V3zM9n4Qr6fR5sH3aB2</div>
+              <button type="button" class="copy-btn" onclick="copyUSDTAddress()">Copy Address</button>
+              <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                ⚠️ Make sure to send USDT via TRC20 network only
+              </p>
+            </div>
+
+            <div class="input-group">
+              <label for="payment-method-sell">How would you like to receive THB?</label>
+              <select id="payment-method-sell" onchange="toggleSellPaymentDetails()">
+                <option value="bank">Bank Transfer</option>
+                <option value="promptpay">PromptPay</option>
+                <option value="cash">Cash Meetup</option>
+              </select>
+            </div>
+
+            <!-- Bank Transfer Details -->
+            <div id="bank-transfer-details">
+              <div class="usdt-account" style="background: #f0f8f0; border-color: #4CAF50;">
+                <h4 style="color: #4CAF50;">🏦 Transfer THB to your bank account</h4>
+                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Please provide your bank details:</p>
+              </div>
+              <div class="input-group">
+                <label for="user-bank-details">Your Bank Account Details</label>
+                <input type="text" id="user-bank-details" placeholder="Bank Name, Account Number, Account Name" required>
+              </div>
+            </div>
+
+            <!-- PromptPay Details -->
+            <div id="promptpay-details" style="display:none;">
+              <div class="usdt-account" style="background: #f0f8f0; border-color: #4CAF50;">
+                <h4 style="color: #4CAF50;">💳 Transfer THB via PromptPay</h4>
+                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">We'll send THB to your PromptPay:</p>
+              </div>
+              <div class="input-group">
+                <label for="promptpay-number">Your PromptPay Number/ID</label>
+                <input type="text" id="promptpay-number" placeholder="Phone number or National ID" required>
+              </div>
+            </div>
+
+            <!-- Cash Meetup Details -->
+            <div id="cash-meetup-details" style="display:none;">
+              <div class="usdt-account" style="background: #fff8f0; border-color: #ff9800;">
+                <h4 style="color: #ff9800;">💰 Cash Meetup in Bangkok</h4>
+                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Meet our agent for cash exchange:</p>
+              </div>
+              <div class="input-group">
+                <label for="pickup-location-sell">Meetup Location (Bangkok)</label>
+                <select id="pickup-location-sell">
+                  <option value="sukhumvit">Sukhumvit</option>
+                  <option value="siam">Siam</option>
+                  <option value="silom">Silom</option>
+                  <option value="chonburi">Chonburi Road</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- File Upload Section (for both buy and sell) -->
+          <div class="input-group">
+            <label for="transaction-proof">Upload Transaction Proof (PDF, PNG, JPG)</label>
+            <div class="file-upload">
+              <input type="file" id="transaction-proof" accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload()" required>
+              <label for="transaction-proof" class="file-upload-label" id="file-upload-label">
+                📁 Click to upload your transaction screenshot/receipt
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="exchange-btn">Confirm &amp; Submit</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Contact Us</h4>
+          <p>📧 support@usdtexchange.com</p>
+          <p>📞 +66 2 123 4567</p>
+          <p>🕒 24/7 Customer Support</p>
+        </div>
+        <div class="footer-section">
+          <h4>Services</h4>
+          <p>Buy USDT with THB</p>
+          <p>Sell USDT for THB</p>
+          <p>Bulk Exchange</p>
+          <p>API Integration</p>
+        </div>
+        <div class="footer-section">
+          <h4>Legal</h4>
+          <p><a href="#">Terms of Service</a></p>
+          <p><a href="#">Privacy Policy</a></p>
+          <p><a href="#">KYC/AML Policy</a></p>
+          <p><a href="#">Risk Disclosure</a></p>
+        </div>
+      </div>
+      <p>&copy; 2024 USDTExchange. All rights reserved. Licensed by Bank of Thailand.</p>
+    </div>
+  </footer>
+
+  <script>
+    let currentExchangeType = 'buy';
+
+    // Page switcher
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Enable Exchange button based on input
+    document.getElementById('amount-input').addEventListener('input', e => {
+      document.getElementById('exchange-btn').disabled = !(e.target.value > 0);
+      calculateExchange();
+    });
+
+    // Calculate exchange amounts
+    function calculateExchange() {
+      const amt = parseFloat(document.getElementById('amount-input').value) || 0;
+      const rate = parseFloat(document.getElementById('current-rate').textContent);
+      if (amt > 0) {
+        let result;
+        if (currentExchangeType === 'buy') {
+          result = (amt / rate).toFixed(4) + ' USDT';
+        } else {
+          result = '฿' + (amt * rate).toFixed(2) + ' THB';
+        }
+        document.getElementById('result-amount').textContent = result;
+        document.getElementById('result-display').style.display = 'flex';
+      } else {
+        document.getElementById('result-display').style.display = 'none';
+      }
+    }
+
+    function setExchangeType(mode) {
+      currentExchangeType = mode;
+      document.querySelectorAll('.exchange-type').forEach(el => el.classList.remove('active'));
+      const el = document.querySelector(`.exchange-type[onclick*="${mode}"]`);
+      el && el.classList.add('active');
+      
+      if (mode === 'buy') {
+        document.getElementById('amount-label').textContent = 'Amount (THB)';
+      } else {
+        document.getElementById('amount-label').textContent = 'Amount (USDT)';
+      }
+      calculateExchange();
+    }
+
+    function proceedToTransaction() {
+      // Update transaction page based on exchange type
+      if (currentExchangeType === 'buy') {
+        document.getElementById('transaction-title').textContent = 'Buy USDT - Payment Details';
+        document.getElementById('transaction-type-display').textContent = 'Buy USDT';
+        document.getElementById('buy-section').style.display = 'block';
+        document.getElementById('sell-section').style.display = 'none';
+      } else {
+        document.getElementById('transaction-title').textContent = 'Sell USDT - Transfer Details';
+        document.getElementById('transaction-type-display').textContent = 'Sell USDT';
+        document.getElementById('buy-section').style.display = 'none';
+        document.getElementById('sell-section').style.display = 'block';
+      }
+      showPage('transaction');
+    }
+
+    function toggleAddressField() {
+      const pm = document.getElementById('payment-method-buy').value;
+      document.getElementById('address-group-buy').style.display = (pm === 'cash') ? 'block' : 'none';
+    }
+
+    function toggleSellPaymentDetails() {
+      const paymentMethod = document.getElementById('payment-method-sell').value;
+      
+      // Hide all payment detail sections
+      document.getElementById('bank-transfer-details').style.display = 'none';
+      document.getElementById('promptpay-details').style.display = 'none';
+      document.getElementById('cash-meetup-details').style.display = 'none';
+      
+      // Show the selected payment method details
+      if (paymentMethod === 'bank') {
+        document.getElementById('bank-transfer-details').style.display = 'block';
+      } else if (paymentMethod === 'promptpay') {
+        document.getElementById('promptpay-details').style.display = 'block';
+      } else if (paymentMethod === 'cash') {
+        document.getElementById('cash-meetup-details').style.display = 'block';
+      }
+    }
+
+    function copyUSDTAddress() {
+      const address = document.getElementById('usdt-address').textContent.replace('TRC20: ', '');
+      navigator.clipboard.writeText(address).then(() => {
+        alert('USDT address copied to clipboard!');
+      });
+    }
+
+    function handleFileUpload() {
+      const fileInput = document.getElementById('transaction-proof');
+      const label = document.getElementById('file-upload-label');
+      
+      if (fileInput.files.length > 0) {
+        const fileName = fileInput.files[0].name;
+        label.textContent = `✅ ${fileName}`;
+        label.classList.add('has-file');
+      } else {
+        label.textContent = '📁 Click to upload your transaction screenshot/receipt';
+        label.classList.remove('has-file');
+      }
+    }
+
+    document.getElementById('transaction-form').addEventListener('submit', e => {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('phone', e.target.phone.value);
+      formData.append('transactionType', currentExchangeType);
+      
+      if (currentExchangeType === 'buy') {
+        formData.append('paymentMethod', e.target['payment-method-buy'].value);
+        if (e.target['pickup-location-buy']) {
+          formData.append('meetupLocation', e.target['pickup-location-buy'].value);
+        }
+      } else {
+        formData.append('paymentMethod', e.target['payment-method-sell'].value);
+        if (e.target['user-bank-details']) {
+          formData.append('bankDetails', e.target['user-bank-details'].value);
+        }
+        if (e.target['promptpay-number']) {
+          formData.append('promptpayNumber', e.target['promptpay-number'].value);
+        }
+        if (e.target['pickup-location-sell']) {
+          formData.append('meetupLocation', e.target['pickup-location-sell'].value);
+        }
+      }
+      
+      if (e.target['transaction-proof'].files[0]) {
+        formData.append('transactionProof', e.target['transaction-proof'].files[0]);
+      }
+      
+      console.log('Transaction data:', Object.fromEntries(formData));
+      alert('Your exchange request has been submitted! We will process it within 15 minutes.');
+      showPage('home');
+      
+      // Reset form
+      e.target.reset();
+      handleFileUpload(); // Reset file upload display
+    });
+  </script>
+</body>
+</html>
