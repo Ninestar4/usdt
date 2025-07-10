@@ -268,9 +268,97 @@
     @media (max-width: 600px) {
       .exchange-header h1 { font-size: 1.75rem; }
       .rate-display .rate { font-size: 1.1rem; }
+      .exchange-card {
+        margin-top: 5rem;
+        margin-bottom: 2rem;
+      }
     }
 
-
+    .lang-switch-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+    }
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      user-select: none;
+      height: 32px;
+    }
+    .lang-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      background: #e0e0e0;
+      border-radius: 16px;
+      margin: 0 8px;
+      transition: background 0.3s;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .slider:before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 22px;
+      height: 22px;
+      background: #667eea;
+      border-radius: 50%;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .lang-switch input:checked + .slider:before {
+      transform: translateX(20px);
+      background: #764ba2;
+    }
+    .lang-label {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #667eea;
+      margin: 0 2px;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+    .lang-switch input:not(:checked) ~ .lang-en {
+      opacity: 1;
+    }
+    .lang-switch input:checked ~ .lang-th {
+      opacity: 1;
+      color: #764ba2;
+    }
+    .lang-switch input:checked ~ .lang-en {
+      opacity: 0.6;
+    }
+    .lang-switch input:not(:checked) ~ .lang-th {
+      opacity: 0.6;
+    }
+    @media (max-width: 600px) {
+      header nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .lang-switch-wrapper {
+        justify-content: center;
+        margin: 0 0 0.5rem 0;
+        width: 100%;
+      }
+      .lang-switch {
+        margin: 0;
+        align-self: center;
+      }
+      .logo {
+        text-align: center;
+        font-size: 1.2rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -279,8 +367,16 @@
     <nav class="container">
       <div class="logo">USDT Exchange Demo</div>
       <div class="nav-links">
-        <a href="#" onclick="showPage('home')">Home</a>
-        <div class="user-info">Welcome, John Doe</div>
+        <a href="#" onclick="showPage('home')" data-en="Home" data-th="หน้าหลัก">Home</a>
+        <div class="user-info" data-en="Welcome, John Doe" data-th="ยินดีต้อนรับ, John Doe">Welcome, John Doe</div>
+      </div>
+      <div class="lang-switch-wrapper">
+        <label class="lang-switch">
+          <input type="checkbox" id="lang-toggle" aria-label="Language switch">
+          <span class="slider"></span>
+          <span class="lang-label lang-en">EN</span>
+          <span class="lang-label lang-th">ไทย</span>
+        </label>
       </div>
     </nav>
   </header>
@@ -290,35 +386,35 @@
     <main class="container">
       <div class="exchange-card">
         <div class="exchange-header">
-          <h1>USDT Exchange</h1>
-          <p>Fast &amp; Secure USDT ↔ Thai Baht Exchange</p>
+          <h1 data-en="USDT Exchange" data-th="แลกเปลี่ยน USDT">USDT Exchange</h1>
+          <p data-en="Fast &amp; Secure USDT ↔ Thai Baht Exchange" data-th="แลกเปลี่ยน USDT ↔ บาทไทย รวดเร็วและปลอดภัย">Fast &amp; Secure USDT ↔ Thai Baht Exchange</p>
         </div>
 
         <div class="rate-display">
           <div class="rate">1 USDT = ฿<span id="current-rate">35.20</span> THB</div>
-          <div class="live">🟢 Live Rate</div>
+          <div class="live" data-en="🟢 Live Rate" data-th="🟢 อัตราแลกเปลี่ยนสด">🟢 Live Rate</div>
         </div>
 
         <div class="exchange-types">
           <div class="exchange-type active" onclick="setExchangeType('buy')">
-            <h3>💰 Buy USDT</h3>
+            <h3 data-en="💰 Buy USDT" data-th="💰 ซื้อ USDT">💰 Buy USDT</h3>
           </div>
           <div class="exchange-type" onclick="setExchangeType('sell')">
-            <h3>💸 Sell USDT</h3>
+            <h3 data-en="💸 Sell USDT" data-th="💸 ขาย USDT">💸 Sell USDT</h3>
           </div>
         </div>
 
         <div class="input-group">
-          <label id="amount-label">Amount (THB)</label>
+          <label id="amount-label" data-en="Amount (THB)" data-th="จำนวน (บาท)">Amount (THB)</label>
           <input type="number" id="amount-input" placeholder="Enter amount" oninput="calculateExchange()"/>
         </div>
 
         <div class="result-display" id="result-display" style="display:none;">
-          <span>You will receive:</span>
+          <span data-en="You will receive:" data-th="คุณจะได้รับ:">You will receive:</span>
           <span class="result-amount" id="result-amount">0</span>
         </div>
 
-        <button class="exchange-btn" onclick="proceedToTransaction()" id="exchange-btn" disabled>
+        <button class="exchange-btn" onclick="proceedToTransaction()" id="exchange-btn" disabled data-en="Exchange Now" data-th="แลกเปลี่ยนตอนนี้">
           Exchange Now
         </button>
       </div>
@@ -326,44 +422,44 @@
       <!-- Site Information -->
       <div class="site-info">
         <div class="exchange-header">
-          <h2>Why Choose USDTExchange?</h2>
-          <p>Your trusted partner for USDT and Thai Baht exchange</p>
+          <h2 data-en="Why Choose USDTExchange?" data-th="ทำไมต้องเลือก USDTExchange?">Why Choose USDTExchange?</h2>
+          <p data-en="Your trusted partner for USDT and Thai Baht exchange" data-th="พันธมิตรที่คุณไว้วางใจสำหรับการแลกเปลี่ยน USDT และบาทไทย">Your trusted partner for USDT and Thai Baht exchange</p>
         </div>
         <div class="info-grid">
           <div class="info-card">
-            <h3>🔒 Secure &amp; Safe</h3>
+            <h3 data-en="🔒 Secure &amp; Safe" data-th="🔒 ปลอดภัย">🔒 Secure &amp; Safe</h3>
             <ul>
-              <li>Bank-level security</li>
-              <li>SSL encrypted transactions</li>
-              <li>Multi-factor authentication</li>
-              <li>Cold storage for funds</li>
+              <li data-en="Bank-level security" data-th="ความปลอดภัยระดับธนาคาร">Bank-level security</li>
+              <li data-en="SSL encrypted transactions" data-th="ธุรกรรมเข้ารหัส SSL">SSL encrypted transactions</li>
+              <li data-en="Multi-factor authentication" data-th="การยืนยันตัวตนหลายขั้นตอน">Multi-factor authentication</li>
+              <li data-en="Cold storage for funds" data-th="เก็บเงินในระบบออฟไลน์ (Cold Storage)">Cold storage for funds</li>
             </ul>
           </div>
           <div class="info-card">
-            <h3>⚡ Fast &amp; Reliable</h3>
+            <h3 data-en="⚡ Fast &amp; Reliable" data-th="⚡ รวดเร็วและเชื่อถือได้">⚡ Fast &amp; Reliable</h3>
             <ul>
-              <li>Instant rate quotes</li>
-              <li>Quick processing times</li>
-              <li>24/7 service availability</li>
-              <li>Real-time market rates</li>
+              <li data-en="Instant rate quotes" data-th="ใบเสนอราคาอัตราแลกเปลี่ยนทันที">Instant rate quotes</li>
+              <li data-en="Quick processing times" data-th="ดำเนินการรวดเร็ว">Quick processing times</li>
+              <li data-en="24/7 service availability" data-th="ให้บริการตลอด 24 ชั่วโมง">24/7 service availability</li>
+              <li data-en="Real-time market rates" data-th="อัตราตลาดแบบเรียลไทม์">Real-time market rates</li>
             </ul>
           </div>
           <div class="info-card">
-            <h3>💳 Multiple Payment Options</h3>
+            <h3 data-en="💳 Multiple Payment Options" data-th="💳 ตัวเลือกการชำระเงินหลากหลาย">💳 Multiple Payment Options</h3>
             <ul>
-              <li>Bank transfer</li>
-              <li>PromptPay</li>
-              <li>Cash meetup in Bangkok</li>
-              <li>Mobile banking</li>
+              <li data-en="Bank transfer" data-th="โอนผ่านธนาคาร">Bank transfer</li>
+              <li data-en="PromptPay" data-th="พร้อมเพย์">PromptPay</li>
+              <li data-en="Cash meetup in Bangkok" data-th="นัดรับเงินสดในกรุงเทพฯ">Cash meetup in Bangkok</li>
+              <li data-en="Mobile banking" data-th="โมบายแบงกิ้ง">Mobile banking</li>
             </ul>
           </div>
           <div class="info-card">
-            <h3>🎯 Best Rates</h3>
+            <h3 data-en="🎯 Best Rates" data-th="🎯 อัตราดีที่สุด">🎯 Best Rates</h3>
             <ul>
-              <li>Competitive exchange rates</li>
-              <li>Low transaction fees</li>
-              <li>No hidden charges</li>
-              <li>Volume discounts available</li>
+              <li data-en="Competitive exchange rates" data-th="อัตราแลกเปลี่ยนที่แข่งขันได้">Competitive exchange rates</li>
+              <li data-en="Low transaction fees" data-th="ค่าธรรมเนียมต่ำ">Low transaction fees</li>
+              <li data-en="No hidden charges" data-th="ไม่มีค่าธรรมเนียมแอบแฝง">No hidden charges</li>
+              <li data-en="Volume discounts available" data-th="มีส่วนลดสำหรับปริมาณมาก">Volume discounts available</li>
             </ul>
           </div>
         </div>
@@ -378,39 +474,39 @@
       <div class="exchange-card">
         <button class="back-btn" onclick="showPage('home')">&larr; Back</button>
         <div class="exchange-header">
-          <h2 id="transaction-title">Confirm Your Details</h2>
+          <h2 id="transaction-title" data-en="Confirm Your Details" data-th="ยืนยันรายละเอียดของคุณ">Confirm Your Details</h2>
         </div>
 
         <div class="user-details" style="margin-bottom:1.5rem;">
-          <p><strong>Name:</strong> John Doe</p>
-          <p><strong>Email:</strong> john.doe@example.com</p>
-          <p><strong>Transaction Type:</strong> <span id="transaction-type-display">Buy USDT</span></p>
+          <p><strong data-en="Name:" data-th="ชื่อ:">Name:</strong> John Doe</p>
+          <p><strong data-en="Email:" data-th="อีเมล:">Email:</strong> john.doe@example.com</p>
+          <p><strong data-en="Transaction Type:" data-th="ประเภทธุรกรรม:">Transaction Type:</strong> <span id="transaction-type-display" data-en="Buy USDT" data-th="ซื้อ USDT">Buy USDT</span></p>
         </div>
 
         <form id="transaction-form">
           <div class="input-group">
-            <label for="phone">Phone Number</label>
+            <label for="phone" data-en="Phone Number" data-th="เบอร์โทรศัพท์">Phone Number</label>
             <input type="tel" id="phone" placeholder="081-234-5678" required>
           </div>
 
           <!-- Buy USDT Section -->
           <div id="buy-section">
             <div class="input-group">
-              <label for="payment-method-buy">Payment Method</label>
+              <label for="payment-method-buy" data-en="Payment Method" data-th="วิธีชำระเงิน">Payment Method</label>
               <select id="payment-method-buy" onchange="toggleAddressField()">
-                <option value="bank">Bank Transfer</option>
-                <option value="promptpay">PromptPay</option>
-                <option value="cash">Cash Meetup</option>
+                <option value="bank" data-en="Bank Transfer" data-th="โอนผ่านธนาคาร">Bank Transfer</option>
+                <option value="promptpay" data-en="PromptPay" data-th="พร้อมเพย์">PromptPay</option>
+                <option value="cash" data-en="Cash Meetup" data-th="นัดรับเงินสด">Cash Meetup</option>
               </select>
             </div>
 
             <div class="input-group" id="address-group-buy" style="display:none;">
-              <label for="pickup-location-buy">Meetup Location (Bangkok)</label>
+              <label for="pickup-location-buy" data-en="Meetup Location (Bangkok)" data-th="สถานที่นัดพบ (กรุงเทพฯ)">Meetup Location (Bangkok)</label>
               <select id="pickup-location-buy">
-                <option value="sukhumvit">Sukhumvit</option>
-                <option value="siam">Siam</option>
-                <option value="silom">Silom</option>
-                <option value="chonburi">Chonburi Road</option>
+                <option value="sukhumvit" data-en="Sukhumvit" data-th="สุขุมวิท">Sukhumvit</option>
+                <option value="siam" data-en="Siam" data-th="สยาม">Siam</option>
+                <option value="silom" data-en="Silom" data-th="สีลม">Silom</option>
+                <option value="chonburi" data-en="Chonburi Road" data-th="ถนนชลบุรี">Chonburi Road</option>
               </select>
             </div>
           </div>
@@ -418,31 +514,31 @@
           <!-- Sell USDT Section -->
           <div id="sell-section" style="display:none;">
             <div class="usdt-account">
-              <h4>📍 Send USDT to this address:</h4>
+              <h4 data-en="📍 Send USDT to this address:" data-th="📍 ส่ง USDT ไปที่ที่อยู่นี้:">📍 Send USDT to this address:</h4>
               <div class="usdt-address" id="usdt-address">TRC20: TYDz8cgkEf5V1x2V3zM9n4Qr6fR5sH3aB2</div>
-              <button type="button" class="copy-btn" onclick="copyUSDTAddress()">Copy Address</button>
+              <button type="button" class="copy-btn" onclick="copyUSDTAddress()" data-en="Copy Address" data-th="คัดลอกที่อยู่">Copy Address</button>
               <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
                 ⚠️ Make sure to send USDT via TRC20 network only
               </p>
             </div>
 
             <div class="input-group">
-              <label for="payment-method-sell">How would you like to receive THB?</label>
+              <label for="payment-method-sell" data-en="How would you like to receive THB?" data-th="คุณต้องการรับบาทไทยอย่างไร?">How would you like to receive THB?</label>
               <select id="payment-method-sell" onchange="toggleSellPaymentDetails()">
-                <option value="bank">Bank Transfer</option>
-                <option value="promptpay">PromptPay</option>
-                <option value="cash">Cash Meetup</option>
+                <option value="bank" data-en="Bank Transfer" data-th="โอนผ่านธนาคาร">Bank Transfer</option>
+                <option value="promptpay" data-en="PromptPay" data-th="พร้อมเพย์">PromptPay</option>
+                <option value="cash" data-en="Cash Meetup" data-th="นัดรับเงินสด">Cash Meetup</option>
               </select>
             </div>
 
             <!-- Bank Transfer Details -->
             <div id="bank-transfer-details">
               <div class="usdt-account" style="background: #f0f8f0; border-color: #4CAF50;">
-                <h4 style="color: #4CAF50;">🏦 Transfer THB to your bank account</h4>
-                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Please provide your bank details:</p>
+                <h4 style="color: #4CAF50;" data-en="🏦 Transfer THB to your bank account" data-th="🏦 โอนเงินเข้าบัญชีธนาคารของคุณ">🏦 Transfer THB to your bank account</h4>
+                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;" data-en="Please provide your bank details:" data-th="กรุณาระบุรายละเอียดบัญชีธนาคารของคุณ:">Please provide your bank details:</p>
               </div>
               <div class="input-group">
-                <label for="user-bank-details">Your Bank Account Details</label>
+                <label for="user-bank-details" data-en="Your Bank Account Details" data-th="รายละเอียดบัญชีธนาคารของคุณ">Your Bank Account Details</label>
                 <input type="text" id="user-bank-details" placeholder="Bank Name, Account Number, Account Name" required>
               </div>
             </div>
@@ -450,11 +546,11 @@
             <!-- PromptPay Details -->
             <div id="promptpay-details" style="display:none;">
               <div class="usdt-account" style="background: #f0f8f0; border-color: #4CAF50;">
-                <h4 style="color: #4CAF50;">💳 Transfer THB via PromptPay</h4>
-                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">We'll send THB to your PromptPay:</p>
+                <h4 style="color: #4CAF50;" data-en="💳 Transfer THB via PromptPay" data-th="💳 โอนเงินผ่านพร้อมเพย์">💳 Transfer THB via PromptPay</h4>
+                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;" data-en="We'll send THB to your PromptPay:" data-th="เราจะโอนเงินไปยังพร้อมเพย์ของคุณ:">We'll send THB to your PromptPay:</p>
               </div>
               <div class="input-group">
-                <label for="promptpay-number">Your PromptPay Number/ID</label>
+                <label for="promptpay-number" data-en="Your PromptPay Number/ID" data-th="หมายเลข/รหัสพร้อมเพย์ของคุณ">Your PromptPay Number/ID</label>
                 <input type="text" id="promptpay-number" placeholder="Phone number or National ID" required>
               </div>
             </div>
@@ -462,16 +558,16 @@
             <!-- Cash Meetup Details -->
             <div id="cash-meetup-details" style="display:none;">
               <div class="usdt-account" style="background: #fff8f0; border-color: #ff9800;">
-                <h4 style="color: #ff9800;">💰 Cash Meetup in Bangkok</h4>
-                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Meet our agent for cash exchange:</p>
+                <h4 style="color: #ff9800;" data-en="💰 Cash Meetup in Bangkok" data-th="💰 นัดรับเงินสดในกรุงเทพฯ">💰 Cash Meetup in Bangkok</h4>
+                <p style="margin-bottom: 0.5rem; font-size: 0.9rem;" data-en="Meet our agent for cash exchange:" data-th="พบเจ้าหน้าที่ของเราเพื่อแลกเงินสด:">Meet our agent for cash exchange:</p>
               </div>
               <div class="input-group">
-                <label for="pickup-location-sell">Meetup Location (Bangkok)</label>
+                <label for="pickup-location-sell" data-en="Meetup Location (Bangkok)" data-th="สถานที่นัดพบ (กรุงเทพฯ)">Meetup Location (Bangkok)</label>
                 <select id="pickup-location-sell">
-                  <option value="sukhumvit">Sukhumvit</option>
-                  <option value="siam">Siam</option>
-                  <option value="silom">Silom</option>
-                  <option value="chonburi">Chonburi Road</option>
+                  <option value="sukhumvit" data-en="Sukhumvit" data-th="สุขุมวิท">Sukhumvit</option>
+                  <option value="siam" data-en="Siam" data-th="สยาม">Siam</option>
+                  <option value="silom" data-en="Silom" data-th="สีลม">Silom</option>
+                  <option value="chonburi" data-en="Chonburi Road" data-th="ถนนชลบุรี">Chonburi Road</option>
                 </select>
               </div>
             </div>
@@ -479,16 +575,14 @@
 
           <!-- File Upload Section (for both buy and sell) -->
           <div class="input-group">
-            <label for="transaction-proof">Upload Transaction Proof (PDF, PNG, JPG)</label>
+            <label for="transaction-proof" data-en="Upload Transaction Proof (PDF, PNG, JPG)" data-th="อัปโหลดหลักฐานการทำธุรกรรม (PDF, PNG, JPG)">Upload Transaction Proof (PDF, PNG, JPG)</label>
             <div class="file-upload">
               <input type="file" id="transaction-proof" accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileUpload()" required>
-              <label for="transaction-proof" class="file-upload-label" id="file-upload-label">
-                📁 Click to upload your transaction screenshot/receipt
-              </label>
+              <label for="transaction-proof" class="file-upload-label" id="file-upload-label" data-en="📁 Click to upload your transaction screenshot/receipt" data-th="📁 คลิกเพื่ออัปโหลดสลิปหรือหลักฐานการโอน">📁 Click to upload your transaction screenshot/receipt</label>
             </div>
           </div>
 
-          <button type="submit" class="exchange-btn">Confirm &amp; Submit</button>
+          <button type="submit" class="exchange-btn" data-en="Confirm &amp; Submit" data-th="ยืนยันและส่ง">Confirm &amp; Submit</button>
         </form>
       </div>
     </main>
@@ -499,32 +593,76 @@
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
-          <h4>Contact Us</h4>
-          <p>📧 support@usdtexchange.com</p>
-          <p>📞 +66 2 123 4567</p>
-          <p>🕒 24/7 Customer Support</p>
+          <h4 data-en="Contact Us" data-th="ติดต่อเรา">Contact Us</h4>
+          <p data-en="📧 support@usdtexchange.com" data-th="📧 support@usdtexchange.com">📧 support@usdtexchange.com</p>
+          <p data-en="📞 +66 2 123 4567" data-th="📞 +66 2 123 4567">📞 +66 2 123 4567</p>
+          <p data-en="🕒 24/7 Customer Support" data-th="🕒 บริการลูกค้าตลอด 24 ชั่วโมง">🕒 24/7 Customer Support</p>
         </div>
         <div class="footer-section">
-          <h4>Services</h4>
-          <p>Buy USDT with THB</p>
-          <p>Sell USDT for THB</p>
-          <p>Bulk Exchange</p>
-          <p>API Integration</p>
+          <h4 data-en="Services" data-th="บริการ">Services</h4>
+          <p data-en="Buy USDT with THB" data-th="ซื้อ USDT ด้วยเงินบาท">Buy USDT with THB</p>
+          <p data-en="Sell USDT for THB" data-th="ขาย USDT เป็นเงินบาท">Sell USDT for THB</p>
+          <p data-en="Bulk Exchange" data-th="แลกเปลี่ยนจำนวนมาก">Bulk Exchange</p>
+          <p data-en="API Integration" data-th="เชื่อมต่อ API">API Integration</p>
         </div>
         <div class="footer-section">
-          <h4>Legal</h4>
-          <p><a href="#">Terms of Service</a></p>
-          <p><a href="#">Privacy Policy</a></p>
-          <p><a href="#">KYC/AML Policy</a></p>
-          <p><a href="#">Risk Disclosure</a></p>
+          <h4 data-en="Legal" data-th="กฎหมาย">Legal</h4>
+          <p><a href="#" data-en="Terms of Service" data-th="ข้อกำหนดการใช้บริการ">Terms of Service</a></p>
+          <p><a href="#" data-en="Privacy Policy" data-th="นโยบายความเป็นส่วนตัว">Privacy Policy</a></p>
+          <p><a href="#" data-en="KYC/AML Policy" data-th="นโยบาย KYC/AML">KYC/AML Policy</a></p>
+          <p><a href="#" data-en="Risk Disclosure" data-th="การเปิดเผยความเสี่ยง">Risk Disclosure</a></p>
         </div>
       </div>
-      <p>&copy; 2024 USDTExchange. All rights reserved. Licensed by Bank of Thailand.</p>
+      <p data-en="&copy; 2024 USDTExchange. All rights reserved. Licensed by Bank of Thailand." data-th="&copy; 2024 USDTExchange. สงวนลิขสิทธิ์ ได้รับอนุญาตโดยธนาคารแห่งประเทศไทย">&copy; 2024 USDTExchange. All rights reserved. Licensed by Bank of Thailand.</p>
     </div>
   </footer>
 
   <script>
     let currentExchangeType = 'buy';
+    let currentLang = localStorage.getItem('usdt-lang') || 'en';
+
+    function updateLanguageTexts() {
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.textContent = el.getAttribute('data-' + currentLang);
+      });
+      // Update placeholders
+      const placeholders = [
+        {id: 'amount-input', en: 'Enter amount', th: 'กรอกจำนวนเงิน'},
+        {id: 'phone', en: '081-234-5678', th: '081-234-5678'},
+        {id: 'user-bank-details', en: 'Bank Name, Account Number, Account Name', th: 'ชื่อธนาคาร เลขบัญชี ชื่อบัญชี'},
+        {id: 'promptpay-number', en: 'Phone number or National ID', th: 'เบอร์โทรศัพท์ หรือเลขบัตรประชาชน'}
+      ];
+      placeholders.forEach(ph => {
+        const el = document.getElementById(ph.id);
+        if (el) el.setAttribute('placeholder', currentLang === 'en' ? ph.en : ph.th);
+      });
+      // Update file upload label if no file selected
+      const fileInput = document.getElementById('transaction-proof');
+      const label = document.getElementById('file-upload-label');
+      if (fileInput && label && !fileInput.files.length) {
+        label.textContent = label.getAttribute('data-' + currentLang);
+      }
+      // Update switch state
+      const langSwitch = document.getElementById('lang-toggle');
+      if (langSwitch) langSwitch.checked = (currentLang === 'th');
+      // Update <option> elements
+      document.querySelectorAll('option[data-en]').forEach(opt => {
+        opt.textContent = opt.getAttribute('data-' + currentLang);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateLanguageTexts();
+      const langSwitch = document.getElementById('lang-toggle');
+      if (langSwitch) {
+        langSwitch.checked = (currentLang === 'th');
+        langSwitch.addEventListener('change', () => {
+          currentLang = langSwitch.checked ? 'th' : 'en';
+          localStorage.setItem('usdt-lang', currentLang);
+          updateLanguageTexts();
+        });
+      }
+    });
 
     // Page switcher
     function showPage(id) {
@@ -612,7 +750,7 @@
     function copyUSDTAddress() {
       const address = document.getElementById('usdt-address').textContent.replace('TRC20: ', '');
       navigator.clipboard.writeText(address).then(() => {
-        alert('USDT address copied to clipboard!');
+        alert(currentLang === 'en' ? 'USDT address copied to clipboard!' : 'คัดลอกที่อยู่ USDT แล้ว!');
       });
     }
 
@@ -660,7 +798,7 @@
       }
       
       console.log('Transaction data:', Object.fromEntries(formData));
-      alert('Your exchange request has been submitted! We will process it within 15 minutes.');
+      alert(currentLang === 'en' ? 'Your exchange request has been submitted! We will process it within 15 minutes.' : 'คำขอแลกเปลี่ยนของคุณถูกส่งแล้ว! เราจะดำเนินการภายใน 15 นาที');
       showPage('home');
       
       // Reset form
