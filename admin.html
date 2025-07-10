@@ -195,20 +195,114 @@
     text-align: center;
   }
 }
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      user-select: none;
+      height: 32px;
+    }
+    .lang-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      background: #e0e0e0;
+      border-radius: 16px;
+      margin: 0 8px;
+      transition: background 0.3s;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .slider:before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 22px;
+      height: 22px;
+      background: #2980b9;
+      border-radius: 50%;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .lang-switch input:checked + .slider:before {
+      transform: translateX(20px);
+      background: #27ae60;
+    }
+    .lang-label {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #2980b9;
+      margin: 0 2px;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+    .lang-switch input:not(:checked) ~ .lang-en {
+      opacity: 1;
+    }
+    .lang-switch input:checked ~ .lang-th {
+      opacity: 1;
+      color: #27ae60;
+    }
+    .lang-switch input:checked ~ .lang-en {
+      opacity: 0.6;
+    }
+    .lang-switch input:not(:checked) ~ .lang-th {
+      opacity: 0.6;
+    }
+    .lang-switch-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+    }
+    @media (max-width: 600px) {
+      .navbar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .lang-switch-wrapper {
+        justify-content: center;
+        margin: 0 0 0.5rem 0;
+        width: 100%;
+      }
+      .lang-switch {
+        margin: 0;
+        align-self: center;
+      }
+      .navbar h1 {
+        text-align: center;
+        font-size: 1.2rem;
+      }
+    }
   </style>
 </head>
 <body>
     <div class="container">
         <nav class="navbar">
-          <h1>Admin Dashboard Demo</h1>
+          <h1 data-en="Admin Dashboard Demo" data-th="แดชบอร์ดผู้ดูแลระบบ">Admin Dashboard Demo</h1>
+          <div class="lang-switch-wrapper">
+            <label class="lang-switch">
+              <input type="checkbox" id="lang-toggle" aria-label="Language switch">
+              <span class="slider"></span>
+              <span class="lang-label lang-en">EN</span>
+              <span class="lang-label lang-th">ไทย</span>
+            </label>
+          </div>
         </nav>
     
         <div class="tabs">
-          <button data-tab="dashboard" class="active">📊 Dashboard</button>
-          <button data-tab="users">👥 Users</button>
-          <button data-tab="transactions">💳 Transactions</button>
-          <button data-tab="history">📝 History</button>
-          <button data-tab="service">💬 Service</button>
+          <button data-tab="dashboard" class="active" data-en="📊 Dashboard" data-th="📊 ภาพรวม">📊 Dashboard</button>
+          <button data-tab="users" data-en="👥 Users" data-th="👥 ผู้ใช้">👥 Users</button>
+          <button data-tab="transactions" data-en="💳 Transactions" data-th="💳 ธุรกรรม">💳 Transactions</button>
+          <button data-tab="history" data-en="📝 History" data-th="📝 ประวัติ">📝 History</button>
+          <button data-tab="service" data-en="💬 Service" data-th="💬 บริการ">💬 Service</button>
         </div>
     
     <div id="dashboard" class="tab-content active">
@@ -216,35 +310,35 @@
         <div class="card">
           <div class="card-icon">👥</div>
           <div class="card-content">
-            <p>Total Users</p>
+            <p data-en="Total Users" data-th="ผู้ใช้ทั้งหมด">Total Users</p>
             <p>1,234</p>
           </div>
         </div>
         <div class="card">
           <div class="card-icon">💵</div>
           <div class="card-content">
-            <p>Daily Volume</p>
+            <p data-en="Daily Volume" data-th="ปริมาณรายวัน">Daily Volume</p>
             <p>฿125,000</p>
           </div>
         </div>
         <div class="card">
           <div class="card-icon">⏱️</div>
           <div class="card-content">
-            <p>Processing</p>
+            <p data-en="Processing" data-th="กำลังดำเนินการ">Processing</p>
             <p>8</p>
           </div>
         </div>
         <div class="card">
           <div class="card-icon">📈</div>
           <div class="card-content">
-            <p>Success Rate</p>
+            <p data-en="Success Rate" data-th="อัตราสำเร็จ">Success Rate</p>
             <p>98.5%</p>
           </div>
         </div>
       </div>
       
       <div class="chart-card">
-        <h2>Transaction Status Distribution</h2>
+        <h2 data-en="Transaction Status Distribution" data-th="สัดส่วนสถานะธุรกรรม">Transaction Status Distribution</h2>
         <div class="chart-container">
           <canvas id="statusChart"></canvas>
         </div>
@@ -256,11 +350,11 @@
         <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
+              <th data-en="ID" data-th="รหัส">ID</th>
+              <th data-en="Name" data-th="ชื่อ">Name</th>
+              <th data-en="Email" data-th="อีเมล">Email</th>
+              <th data-en="Role" data-th="บทบาท">Role</th>
+              <th data-en="Status" data-th="สถานะ">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -268,36 +362,36 @@
               <td>1</td>
               <td>Alice Smith</td>
               <td>alice@example.com</td>
-              <td>User</td>
-              <td><span class="badge processing">Active</span></td>
+              <td data-en="User" data-th="ผู้ใช้">User</td>
+              <td><span class="badge processing" data-en="Active" data-th="ใช้งานอยู่">Active</span></td>
             </tr>
             <tr>
               <td>2</td>
               <td>Bob Johnson</td>
               <td>bob@example.com</td>
-              <td>Admin</td>
-              <td><span class="badge completed">Active</span></td>
+              <td data-en="Admin" data-th="แอดมิน">Admin</td>
+              <td><span class="badge completed" data-en="Active" data-th="ใช้งานอยู่">Active</span></td>
             </tr>
             <tr>
               <td>3</td>
               <td>Carol Williams</td>
               <td>carol@example.com</td>
-              <td>Support</td>
-              <td><span class="badge requested">Pending</span></td>
+              <td data-en="Support" data-th="ซัพพอร์ต">Support</td>
+              <td><span class="badge requested" data-en="Pending" data-th="รอดำเนินการ">Pending</span></td>
             </tr>
             <tr>
               <td>4</td>
               <td>David Brown</td>
               <td>david@example.com</td>
-              <td>User</td>
-              <td><span class="badge completed">Active</span></td>
+              <td data-en="User" data-th="ผู้ใช้">User</td>
+              <td><span class="badge completed" data-en="Completed" data-th="เสร็จสิ้น">Completed</span></td>
             </tr>
             <tr>
               <td>5</td>
               <td>Eva Martinez</td>
               <td>eva@example.com</td>
-              <td>Manager</td>
-              <td><span class="badge processing">Active</span></td>
+              <td data-en="Manager" data-th="ผู้จัดการ">Manager</td>
+              <td><span class="badge processing" data-en="Active" data-th="ใช้งานอยู่">Active</span></td>
             </tr>
           </tbody>
         </table>
@@ -309,61 +403,61 @@
         <table>
           <thead>
             <tr>
-              <th>User</th>
-              <th>Type</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Date</th>
-              <th>Actions</th>
+              <th data-en="User" data-th="ผู้ใช้">User</th>
+              <th data-en="Type" data-th="ประเภท">Type</th>
+              <th data-en="Amount" data-th="จำนวน">Amount</th>
+              <th data-en="Status" data-th="สถานะ">Status</th>
+              <th data-en="Date" data-th="วันที่">Date</th>
+              <th data-en="Actions" data-th="การดำเนินการ">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>Alice Smith</td>
-              <td>Buy</td>
+              <td data-en="Buy" data-th="ซื้อ">Buy</td>
               <td>500 USDT</td>
-              <td><span class="badge requested">Requested</span></td>
+              <td><span class="badge requested" data-en="Requested" data-th="ร้องขอ">Requested</span></td>
               <td>2024-12-21</td>
               <td class="actions">
-                <button class="accept">Accept</button>
+                <button class="accept" data-en="Accept" data-th="ยอมรับ">Accept</button>
               </td>
             </tr>
             <tr>
               <td>Bob Johnson</td>
-              <td>Sell</td>
+              <td data-en="Sell" data-th="ขาย">Sell</td>
               <td>1,000 USDT</td>
-              <td><span class="badge processing">Processing</span></td>
+              <td><span class="badge processing" data-en="Processing" data-th="กำลังดำเนินการ">Processing</span></td>
               <td>2024-12-20</td>
               <td class="actions">
-                <button class="complete">Complete</button>
+                <button class="complete" data-en="Complete" data-th="เสร็จสิ้น">Complete</button>
               </td>
             </tr>
             <tr>
               <td>Carol Williams</td>
-              <td>Buy</td>
+              <td data-en="Buy" data-th="ซื้อ">Buy</td>
               <td>250 USDT</td>
-              <td><span class="badge completed">Completed</span></td>
+              <td><span class="badge completed" data-en="Completed" data-th="เสร็จสิ้น">Completed</span></td>
               <td>2024-12-20</td>
               <td class="actions"></td>
             </tr>
             <tr>
               <td>David Brown</td>
-              <td>Buy</td>
+              <td data-en="Buy" data-th="ซื้อ">Buy</td>
               <td>750 USDT</td>
-              <td><span class="badge requested">Requested</span></td>
+              <td><span class="badge requested" data-en="Requested" data-th="ร้องขอ">Requested</span></td>
               <td>2024-12-19</td>
               <td class="actions">
-                <button class="accept">Accept</button>
+                <button class="accept" data-en="Accept" data-th="ยอมรับ">Accept</button>
               </td>
             </tr>
             <tr>
               <td>Eva Martinez</td>
-              <td>Sell</td>
+              <td data-en="Sell" data-th="ขาย">Sell</td>
               <td>2,000 USDT</td>
-              <td><span class="badge processing">Processing</span></td>
+              <td><span class="badge processing" data-en="Processing" data-th="กำลังดำเนินการ">Processing</span></td>
               <td>2024-12-18</td>
               <td class="actions">
-                <button class="complete">Complete</button>
+                <button class="complete" data-en="Complete" data-th="เสร็จสิ้น">Complete</button>
               </td>
             </tr>
           </tbody>
@@ -376,42 +470,42 @@
         <table>
           <thead>
             <tr>
-              <th>Event</th>
-              <th>User</th>
-              <th>Date/Time</th>
-              <th>Details</th>
+              <th data-en="Event" data-th="เหตุการณ์">Event</th>
+              <th data-en="User" data-th="ผู้ใช้">User</th>
+              <th data-en="Date/Time" data-th="วัน/เวลา">Date/Time</th>
+              <th data-en="Details" data-th="รายละเอียด">Details</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Login</td>
+              <td data-en="Login" data-th="เข้าสู่ระบบ">Login</td>
               <td>Alice Smith</td>
               <td>2025-06-23 14:32</td>
-              <td>Successful login from Bangkok</td>
+              <td data-en="Successful login from Bangkok" data-th="เข้าสู่ระบบสำเร็จจากกรุงเทพฯ">Successful login from Bangkok</td>
             </tr>
             <tr>
-              <td>Password Change</td>
+              <td data-en="Password Change" data-th="เปลี่ยนรหัสผ่าน">Password Change</td>
               <td>Bob Johnson</td>
               <td>2025-06-22 09:15</td>
-              <td>Changed via profile settings</td>
+              <td data-en="Changed via profile settings" data-th="เปลี่ยนผ่านการตั้งค่าโปรไฟล์">Changed via profile settings</td>
             </tr>
             <tr>
-              <td>Transaction</td>
+              <td data-en="Transaction" data-th="ธุรกรรม">Transaction</td>
               <td>Carol Williams</td>
               <td>2025-06-21 17:45</td>
-              <td>250 USDT bought successfully</td>
+              <td data-en="250 USDT bought successfully" data-th="ซื้อ 250 USDT สำเร็จ">250 USDT bought successfully</td>
             </tr>
             <tr>
-              <td>Account Created</td>
+              <td data-en="Account Created" data-th="สร้างบัญชี">Account Created</td>
               <td>David Brown</td>
               <td>2025-06-20 11:30</td>
-              <td>New user registration</td>
+              <td data-en="New user registration" data-th="ลงทะเบียนผู้ใช้ใหม่">New user registration</td>
             </tr>
             <tr>
-              <td>Withdrawal</td>
+              <td data-en="Withdrawal" data-th="ถอนเงิน">Withdrawal</td>
               <td>Eva Martinez</td>
               <td>2025-06-19 16:20</td>
-              <td>1,500 USDT withdrawn to wallet</td>
+              <td data-en="1,500 USDT withdrawn to wallet" data-th="ถอน 1,500 USDT ไปยังกระเป๋าเงิน">1,500 USDT withdrawn to wallet</td>
             </tr>
           </tbody>
         </table>
@@ -421,15 +515,15 @@
     <div id="service" class="tab-content">
       <div class="chat-window">
         <div class="messages" id="chatMessages">
-          <div class="message agent">Hello! Welcome to our support center. How can I assist you today?</div>
-          <div class="message user">I need help with my recent transaction.</div>
-          <div class="message agent">Sure, I'd be happy to help! Can you provide the transaction ID or tell me more about the issue you're experiencing?</div>
-          <div class="message user">My transaction has been pending for 2 hours.</div>
-          <div class="message agent">I understand your concern. Let me check the status for you. Transactions typically take 5-15 minutes to process. I'll escalate this to our technical team right away.</div>
+          <div class="message agent" data-en="Hello! Welcome to our support center. How can I assist you today?" data-th="สวัสดี! ยินดีต้อนรับสู่ศูนย์บริการลูกค้า มีอะไรให้ช่วยเหลือคะ?">Hello! Welcome to our support center. How can I assist you today?</div>
+          <div class="message user" data-en="I need help with my recent transaction." data-th="ฉันต้องการความช่วยเหลือเกี่ยวกับธุรกรรมล่าสุดของฉัน">I need help with my recent transaction.</div>
+          <div class="message agent" data-en="Sure, I'd be happy to help! Can you provide the transaction ID or tell me more about the issue you're experiencing?" data-th="แน่นอน ยินดีช่วยเหลือ! กรุณาระบุรหัสธุรกรรมหรือแจ้งรายละเอียดปัญหาที่พบ">Sure, I'd be happy to help! Can you provide the transaction ID or tell me more about the issue you're experiencing?</div>
+          <div class="message user" data-en="My transaction has been pending for 2 hours." data-th="ธุรกรรมของฉันรอดำเนินการมา 2 ชั่วโมงแล้ว">My transaction has been pending for 2 hours.</div>
+          <div class="message agent" data-en="I understand your concern. Let me check the status for you. Transactions typically take 5-15 minutes to process. I'll escalate this to our technical team right away." data-th="เข้าใจความกังวลค่ะ ขอเช็คสถานะให้ ธุรกรรมปกติใช้เวลา 5-15 นาที จะส่งเรื่องให้ทีมเทคนิคตรวจสอบทันที">I understand your concern. Let me check the status for you. Transactions typically take 5-15 minutes to process. I'll escalate this to our technical team right away.</div>
         </div>
         <div class="chat-input">
-          <input type="text" id="messageInput" placeholder="Type your message...">
-          <button onclick="sendMessage()">Send</button>
+          <input type="text" id="messageInput" placeholder="Type your message..." data-en="Type your message..." data-th="พิมพ์ข้อความของคุณ...">
+          <button onclick="sendMessage()" data-en="Send" data-th="ส่ง">Send</button>
         </div>
       </div>
     </div>
@@ -437,6 +531,40 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <script>
+    let currentLang = localStorage.getItem('admin-lang') || 'en';
+    function updateLanguageTexts() {
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.textContent = el.getAttribute('data-' + currentLang);
+      });
+      // Update placeholders
+      const placeholders = [
+        {id: 'messageInput', en: 'Type your message...', th: 'พิมพ์ข้อความของคุณ...'}
+      ];
+      placeholders.forEach(ph => {
+        const el = document.getElementById(ph.id);
+        if (el) el.setAttribute('placeholder', currentLang === 'en' ? ph.en : ph.th);
+      });
+      // Update switch state
+      const langSwitch = document.getElementById('lang-toggle');
+      if (langSwitch) langSwitch.checked = (currentLang === 'th');
+      // Update <option> elements if any
+      document.querySelectorAll('option[data-en]').forEach(opt => {
+        opt.textContent = opt.getAttribute('data-' + currentLang);
+      });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      updateLanguageTexts();
+      const langSwitch = document.getElementById('lang-toggle');
+      if (langSwitch) {
+        langSwitch.checked = (currentLang === 'th');
+        langSwitch.addEventListener('change', () => {
+          currentLang = langSwitch.checked ? 'th' : 'en';
+          localStorage.setItem('admin-lang', currentLang);
+          updateLanguageTexts();
+        });
+      }
+    });
+
     // Tab functionality
     document.querySelectorAll('.tabs button').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -591,16 +719,15 @@
           agentMessage.className = 'message agent';
           
           // Simple response logic
-          if (messageText.toLowerCase().includes('transaction')) {
-            agentMessage.textContent = 'I can help you with transaction issues. Could you please provide your transaction ID?';
-          } else if (messageText.toLowerCase().includes('balance')) {
-            agentMessage.textContent = 'For balance inquiries, please log into your account or provide your user ID for verification.';
-          } else if (messageText.toLowerCase().includes('help')) {
-            agentMessage.textContent = 'I\'m here to help! You can ask me about transactions, account issues, or general support questions.';
+          if (messageText.toLowerCase().includes('transaction') || messageText.includes('ธุรกรรม')) {
+            agentMessage.textContent = currentLang === 'en' ? 'I can help you with transaction issues. Could you please provide your transaction ID?' : 'ฉันสามารถช่วยเหลือเรื่องธุรกรรมได้ กรุณาระบุรหัสธุรกรรมของคุณ';
+          } else if (messageText.toLowerCase().includes('balance') || messageText.includes('ยอดเงิน')) {
+            agentMessage.textContent = currentLang === 'en' ? 'For balance inquiries, please log into your account or provide your user ID for verification.' : 'หากต้องการสอบถามยอดเงิน กรุณาเข้าสู่ระบบหรือแจ้งรหัสผู้ใช้เพื่อยืนยันตัวตน';
+          } else if (messageText.toLowerCase().includes('help') || messageText.includes('ช่วย')) {
+            agentMessage.textContent = currentLang === 'en' ? 'I\'m here to help! You can ask me about transactions, account issues, or general support questions.' : 'ฉันพร้อมช่วยเหลือ! คุณสามารถสอบถามเรื่องธุรกรรม ปัญหาบัญชี หรือคำถามทั่วไปได้';
           } else {
-            agentMessage.textContent = 'Thank you for your message. Our team will review your request and get back to you shortly.';
+            agentMessage.textContent = currentLang === 'en' ? 'Thank you for your message. Our team will review your request and get back to you shortly.' : 'ขอบคุณสำหรับข้อความ ทีมงานจะตรวจสอบและติดต่อกลับโดยเร็วที่สุด';
           }
-          
           messagesContainer.appendChild(agentMessage);
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }, 1000);
@@ -624,22 +751,19 @@
         const row = this.closest('tr');
         const userName = row.cells[0].textContent;
         
-        if (action === 'Accept') {
-          this.textContent = 'Accepted';
+        if (action === (currentLang === 'en' ? 'Accept' : 'ยอมรับ')) {
+          this.textContent = currentLang === 'en' ? 'Accepted' : 'ยอมรับแล้ว';
           this.className = 'complete';
           this.disabled = true;
-          
           // Update status badge
           const statusBadge = row.querySelector('.badge');
-          statusBadge.textContent = 'Processing';
+          statusBadge.textContent = currentLang === 'en' ? 'Processing' : 'กำลังดำเนินการ';
           statusBadge.className = 'badge processing';
-          
-        } else if (action === 'Complete') {
+        } else if (action === (currentLang === 'en' ? 'Complete' : 'เสร็จสิ้น')) {
           this.style.display = 'none';
-          
           // Update status badge
           const statusBadge = row.querySelector('.badge');
-          statusBadge.textContent = 'Completed';
+          statusBadge.textContent = currentLang === 'en' ? 'Completed' : 'เสร็จสิ้น';
           statusBadge.className = 'badge completed';
         }
         
